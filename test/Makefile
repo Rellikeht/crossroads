@@ -1,6 +1,8 @@
 BUILD_DIR = build
 SRC = ../src
 
+.PHONY: obj clean test run
+
 test: obj
 	gcc -o $(BUILD_DIR)/test $(BUILD_DIR)/crossroads.o test.c
 

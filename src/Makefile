@@ -1,6 +1,8 @@
 BUILD_DIR = build
 TEST_DIR = ../test
 
+.PHONY: exe obj clean test run_tests run
+
 exe: obj
 	gcc -o $(BUILD_DIR)/main $(BUILD_DIR)/crossroads.o main.c
 
