@@ -1,19 +1,59 @@
-import subprocess as sp
-from json import load, dump
+#!/usr/bin/env python
+
+from subprocess import run
+from json import load, dumps
 from sys import argv, stdin, stdout
+from os import path
+
+SCRIPT_PATH = path.dirname(path.realpath(__file__))
+DIRECTIONS = {"north": 0, "east": 1, "south": 2, "west": 3}
 
 
-def parse_commands(commands: list[dict[str, str]]) -> list[str]:
-    return []  # TODO
+def parse_commands(commands):
+    output = []
+    for command in commands:
+        if command["type"] == "step":
+            output.append("0")
+            continue
+        id = int(command["vehicleId"][7:])
+        start = DIRECTIONS[command["startRoad"]]
+        end = DIRECTIONS[command["endRoad"]]
+        output.append(f"{id} {start} {end}")
+    return output
 
 
-def parse_output(output: str) -> list[str]:
-    return []  # TODO
+def parse_output(output):
+    parsed = []
+    for line in output:
+        parsed.append(
+            list(map(lambda id: "vehicle" + str(id), line.split(" ")))
+        )
+    return parsed
 
 
-def simulate(commands: list[dict[str, str]], out_file):
-    output: list[dict[str, list[str]]] = []
-    dump(output, out_file)
+def simulate(commands, out_file):
+    process = run(
+        f"make -C {SCRIPT_PATH}/src exe".split(" "),
+        capture_output=True,
+    )
+    if len(process.stderr) > 0:
+        print(process.stderr)
+    process.check_returncode()
+
+    commands = "\n".join(parse_commands(commands))
+    process = run(
+        f"{SCRIPT_PATH}/src/build/main",
+        input=commands,
+        encoding="ascii",
+        capture_output=True,
+    )
+    if len(process.stderr) > 0:
+        print(process.stderr)
+    process.check_returncode()
+
+    output = parse_output(process.stdout.splitlines())
+    out_file.write(dumps({"stepStatuses": output}, indent=2))
+    out_file.write("\n")
 
 
 if len(argv) < 2:
