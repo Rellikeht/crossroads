@@ -18,7 +18,7 @@ def parse_commands(commands):
         id = int(command["vehicleId"][7:])
         start = DIRECTIONS[command["startRoad"]]
         end = DIRECTIONS[command["endRoad"]]
-        output.append(f"{id} {start} {end}")
+        output.append(f"1 {id} {start} {end}")
     return output
 
 
@@ -26,7 +26,13 @@ def parse_output(output):
     parsed = []
     for line in output:
         parsed.append(
-            list(map(lambda id: "vehicle" + str(id), line.split(" ")))
+            {
+                "leftVehicles": []
+                if len(line) == 0
+                else list(
+                    map(lambda id: "vehicle" + str(id), line.split(" "))
+                )
+            }
         )
     return parsed
 

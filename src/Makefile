@@ -13,7 +13,7 @@ obj:
 clean:
 	rm -fr $(BUILD_DIR)/*
 
-test:
+tests:
 	make -C $(TEST_DIR)
 
 run_tests:
