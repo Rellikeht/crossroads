@@ -43,7 +43,7 @@ def simulate(commands, out_file):
         capture_output=True,
     )
     if len(process.stderr) > 0:
-        print(process.stderr)
+        print(process.stderr, end="")
     process.check_returncode()
 
     commands = "\n".join(parse_commands(commands))
@@ -54,7 +54,7 @@ def simulate(commands, out_file):
         capture_output=True,
     )
     if len(process.stderr) > 0:
-        print(process.stderr)
+        print(process.stderr, end="")
     process.check_returncode()
 
     output = parse_output(process.stdout.splitlines())

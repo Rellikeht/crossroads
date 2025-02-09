@@ -46,26 +46,117 @@ int_t cars_amount(Road *road, bool left) {
   return ROAD_LENGTH - road->main_first + road->main_last;
 }
 
-bool change() {
-  // TODO
-  return true;
+int max_val4(int_t *nums, size_t size) {
+  int_t max = nums[0];
+  int ind = 0;
+  for (size_t i = 1; i < size; i++) {
+    if (nums[i] > max) {
+      ind = i;
+      max = nums[i];
+    }
+  }
+  return ind;
+  //
 }
 
-#define TAKE_CAR(road, left_turn)                                  \
-  if (cars_amount(road, left_turn)) {                              \
-    Car car = del(road, left_turn);                                \
-    printf("%i\n", car.id);                                        \
-    fprintf(stderr, "%i\n", car.id);                               \
+bool change_lights(
+    Road roads[4], bool *north_south, bool *left_turn, int wait_time
+) {
+  // cars wating on lane groups that can move simultaneously
+  int_t ns_main = cars_amount(&roads[NORTH], false) +
+                  cars_amount(&roads[SOUTH], false);
+  int_t ew_main = cars_amount(&roads[EAST], false) +
+                  cars_amount(&roads[WEST], false);
+  int_t ns_left = cars_amount(&roads[NORTH], true) +
+                  cars_amount(&roads[SOUTH], true);
+  int_t ew_left = cars_amount(&roads[EAST], true) +
+                  cars_amount(&roads[WEST], true);
+
+  // if there aren't any cars waiting do nothing
+  if (!(ns_main || ew_main || ns_left || ew_left)) {
+    return false;
   }
 
-void move_cars(Road roads[4], bool north_south, bool left_turn) {
+  // set amount of cars on current lane and set
+  // appropriate counter to zero to simplify calculations
+  int_t cur_lane = 0;
   if (north_south) {
-    TAKE_CAR(&roads[NORTH], left_turn);
-    TAKE_CAR(&roads[SOUTH], left_turn);
+    if (left_turn) {
+      cur_lane = ns_left;
+      ns_left = 0;
+    } else {
+      cur_lane = ns_main;
+      ns_main = 0;
+    }
   } else {
-    TAKE_CAR(&roads[EAST], left_turn);
-    TAKE_CAR(&roads[WEST], left_turn);
+    if (left_turn) {
+      cur_lane = ew_left;
+      ew_left = 0;
+    } else {
+      cur_lane = ew_main;
+      ew_main = 0;
+    }
   }
+
+  // if no car is currently waiting on current lane switch the
+  // lights to allow lane with most cars waiting to move
+  if (cur_lane == 0) {
+    int_t nums[4] = {ns_main, ns_left, ew_main, ew_left};
+    switch (max_val4(nums, 4)) {
+    case 0:
+      *north_south = true;
+      *left_turn = false;
+      break;
+    case 1:
+      *north_south = true;
+      *left_turn = true;
+      break;
+    case 2:
+      *north_south = false;
+      *left_turn = false;
+      break;
+    case 3:
+      *north_south = false;
+      *left_turn = true;
+      break;
+    }
+    return true;
+  }
+
+  return false;
+}
+
+void move_cars(Road roads[4], bool north_south, bool left_turn) {
+  bool moved = false;
+  if (north_south) {
+    if (cars_amount(&roads[NORTH], left_turn)) {
+      Car car = del(&roads[NORTH], left_turn);
+      printf("%i", car.id);
+      moved = true;
+    }
+    if (cars_amount(&roads[SOUTH], left_turn)) {
+      Car car = del(&roads[SOUTH], left_turn);
+      if (moved) {
+        printf(" ");
+      }
+      printf("%i", car.id);
+    }
+
+  } else {
+    if (cars_amount(&roads[EAST], left_turn)) {
+      Car car = del(&roads[EAST], left_turn);
+      printf("%i", car.id);
+      moved = true;
+    }
+    if (cars_amount(&roads[WEST], left_turn)) {
+      Car car = del(&roads[WEST], left_turn);
+      if (moved) {
+        printf(" ");
+      }
+      printf("%i", car.id);
+    }
+  }
+  printf("\n");
 }
 
 void simulate() {
@@ -77,19 +168,21 @@ void simulate() {
     int command = 0;
     scanf("%i", &command);
 
-    if (command != MOVE_COMMAND) {
+    if (command == ADD_COMMAND) {
       Car newCar = {0};
       int position = 0;
       scanf("%i %i %i", &newCar.id, &position, &newCar.destination);
       add(&roads[position],
-          newCar.destination - position == LEFT_TURN,
+          position - newCar.destination == LEFT_TURN,
           newCar);
       continue;
     }
 
     move_cars(roads, north_south, left_turn);
-    // TODO change lights
-
-    wait_time++;
+    if (!change_lights(
+            roads, &north_south, &left_turn, wait_time
+        )) {
+      wait_time++;
+    }
   }
 }
