@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define TESTS       1000
+#define TESTS       100
 #define MAX_OP_SIZE 1000
 
 #include "../src/crossroads.h"
 
 Road queue = {0};
-int element_amounts[TESTS] = {0};
+long long element_amounts[TESTS] = {0};
 long long element_sum = 0, max_sum = 0;
 Car test_car = {0};
 long long take_id = 0;
@@ -34,7 +34,7 @@ void lane_add_test(bool left) {
 }
 
 void lane_del_test(bool left) {
-  for (int i = 0; i < TESTS * MAX_OP_SIZE * 2; i++) {
+  for (int i = 0; i < TESTS; i++) {
     for (int j = 0; j < element_amounts[i]; j++) {
       Car car = del(&queue, left);
       assert(car.id == take_id);
@@ -54,13 +54,13 @@ void lane_del_test(bool left) {
 }
 
 void lane_moving_test(bool left) {
-  for (int i = 0; i < TESTS; i++) {
-    for (int j = 0; j < element_amounts[i]; j++) {
+  for (int i = 0; i < TESTS * MAX_OP_SIZE * 2; i++) {
+    for (int j = 0; j < element_amounts[i % TESTS]; j++) {
       add(&queue, left, test_car);
       test_car.id++;
     }
-    assert(cars_amount(&queue, left) == element_amounts[i]);
-    for (int j = 0; j < element_amounts[i]; j++) {
+    assert(cars_amount(&queue, left) == element_amounts[i % TESTS]);
+    for (int j = 0; j < element_amounts[i % TESTS]; j++) {
       Car car = del(&queue, left);
       assert(car.id == take_id);
       take_id++;
@@ -78,17 +78,33 @@ int main(void) {
 
   lane_add_test(true);
   assert(element_sum == max_sum);
+  printf("Right lane adding works\n");
+  fflush(stdout);
+
   lane_del_test(true);
   assert(element_sum == 0);
+  printf("Right lane deleting works\n");
+  fflush(stdout);
+
   lane_moving_test(true);
   assert(element_sum == 0);
+  printf("Right lane moving works\n");
+  fflush(stdout);
 
   lane_add_test(false);
   assert(element_sum == max_sum);
+  printf("Left lane adding works\n");
+  fflush(stdout);
+
   lane_del_test(false);
   assert(element_sum == 0);
+  printf("Left lane deleting works\n");
+  fflush(stdout);
+
   lane_moving_test(false);
   assert(element_sum == 0);
+  printf("Left lane moving works\n");
+  fflush(stdout);
 
   printf("Lanes work properly\n");
   return 0;

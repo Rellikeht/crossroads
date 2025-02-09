@@ -8,7 +8,8 @@ tests: road_test simulation_test
 run: run_road_test run_simulation_test
 
 road_test:
-	gcc -Og -g -D ROAD_LENGTH=1000001 -o $(BUILD_DIR)/road_test $(SRC)/crossroads.c road_test.c
+	gcc -Og -g -D ROAD_LENGTH=100001 -D INT_TYPE="long long" \
+		-o $(BUILD_DIR)/road_test $(SRC)/crossroads.c road_test.c
 
 run_road_test: road_test
 	$(BUILD_DIR)/road_test

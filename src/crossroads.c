@@ -1,9 +1,11 @@
 #include "crossroads.h"
 #include <stdio.h>
 
+Car empty_car = {.id = -1, .destination = -1};
+
 void add(Road *road, bool left, Car car) {
   Car *lane;
-  int *last;
+  int_t *last;
   if (left) {
     lane = road->left_lane;
     last = &road->left_last;
@@ -17,7 +19,7 @@ void add(Road *road, bool left, Car car) {
 
 Car del(Road *road, bool left) {
   Car *lane, result;
-  int *first;
+  int_t *first;
   if (left) {
     lane = road->left_lane;
     first = &road->left_first;
@@ -26,11 +28,12 @@ Car del(Road *road, bool left) {
     first = &road->main_first;
   }
   result = lane[*first];
+  lane[*first] = empty_car;
   *first = (*first + 1) % ROAD_LENGTH;
   return result;
 }
 
-int cars_amount(Road *road, bool left) {
+int_t cars_amount(Road *road, bool left) {
   if (left) {
     if (road->left_first <= road->left_last) {
       return road->left_last - road->left_first;
@@ -48,13 +51,20 @@ bool change() {
   return true;
 }
 
+#define TAKE_CAR(road, left_turn)                                  \
+  if (cars_amount(road, left_turn)) {                              \
+    Car car = del(road, left_turn);                                \
+    printf("%i\n", car.id);                                        \
+    fprintf(stderr, "%i\n", car.id);                               \
+  }
+
 void move_cars(Road roads[4], bool north_south, bool left_turn) {
   if (north_south) {
-    del(&roads[NORTH], left_turn);
-    del(&roads[SOUTH], left_turn);
+    TAKE_CAR(&roads[NORTH], left_turn);
+    TAKE_CAR(&roads[SOUTH], left_turn);
   } else {
-    del(&roads[EAST], left_turn);
-    del(&roads[WEST], left_turn);
+    TAKE_CAR(&roads[EAST], left_turn);
+    TAKE_CAR(&roads[WEST], left_turn);
   }
 }
 
@@ -65,8 +75,8 @@ void simulate() {
 
   while (!feof(stdin)) {
     int command = 0;
-
     scanf("%i", &command);
+
     if (command != MOVE_COMMAND) {
       Car newCar = {0};
       int position = 0;
@@ -79,5 +89,7 @@ void simulate() {
 
     move_cars(roads, north_south, left_turn);
     // TODO change lights
+
+    wait_time++;
   }
 }
