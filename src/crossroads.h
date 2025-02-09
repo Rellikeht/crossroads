@@ -18,6 +18,9 @@
 
 #define MIN_PASS_TIME 1
 
+/*
+ * Just a car with given destination
+ */
 typedef struct {
   int_t id;
   int destination;
@@ -56,7 +59,7 @@ void move_cars(Road roads[4], bool north_south, bool left_turn);
 /*
  * Index of maximum value in array
  */
-int max_val4(int_t *nums, size_t size);
+int max_val_ind(int_t *nums, size_t size);
 
 /* Run simulation */
 void simulate();

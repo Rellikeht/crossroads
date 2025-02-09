@@ -10,6 +10,9 @@ DIRECTIONS = {"north": 0, "east": 1, "south": 2, "west": 3}
 
 
 def parse_commands(commands):
+    """
+    Change input commands to data readable by main program
+    """
     output = []
     for command in commands:
         if command["type"] == "step":
@@ -23,6 +26,9 @@ def parse_commands(commands):
 
 
 def parse_output(output):
+    """
+    Change output of main program to json
+    """
     parsed = []
     for line in output:
         parsed.append(
@@ -38,6 +44,9 @@ def parse_output(output):
 
 
 def simulate(commands, out_file):
+    """
+    Run simulation
+    """
     process = run(
         f"make -C {SCRIPT_PATH}/src exe".split(" "),
         capture_output=True,

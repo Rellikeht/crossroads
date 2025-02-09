@@ -46,7 +46,7 @@ int_t cars_amount(Road *road, bool left) {
   return ROAD_LENGTH - road->main_first + road->main_last;
 }
 
-int max_val4(int_t *nums, size_t size) {
+int max_val_ind(int_t *nums, size_t size) {
   int_t max = nums[0];
   int ind = 0;
   for (size_t i = 1; i < size; i++) {
@@ -56,7 +56,6 @@ int max_val4(int_t *nums, size_t size) {
     }
   }
   return ind;
-  //
 }
 
 bool change_lights(
@@ -102,7 +101,7 @@ bool change_lights(
   // lights to allow lane with most cars waiting to move
   if (cur_lane == 0) {
     int_t nums[4] = {ns_main, ns_left, ew_main, ew_left};
-    switch (max_val4(nums, 4)) {
+    switch (max_val_ind(nums, 4)) {
     case 0:
       *north_south = true;
       *left_turn = false;

@@ -1,10 +1,14 @@
+/*
+ * Randomized tests for lanes of a road (queues)
+ */
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define TESTS       100
-#define MAX_OP_SIZE 1000
+#define TESTS          100
+#define MAX_BATCH_SIZE 1000
 
 #include "../src/crossroads.h"
 
@@ -54,7 +58,7 @@ void lane_del_test(bool left) {
 }
 
 void lane_moving_test(bool left) {
-  for (int i = 0; i < TESTS * MAX_OP_SIZE * 2; i++) {
+  for (int i = 0; i < TESTS * MAX_BATCH_SIZE * 2; i++) {
     for (int j = 0; j < element_amounts[i % TESTS]; j++) {
       add(&queue, left, test_car);
       test_car.id++;
@@ -72,7 +76,7 @@ int main(void) {
   srand(time(NULL));
 
   for (int i = 0; i < TESTS; i++) {
-    element_amounts[i] = rand() % MAX_OP_SIZE;
+    element_amounts[i] = rand() % MAX_BATCH_SIZE;
     max_sum += element_amounts[i];
   }
 
