@@ -6,9 +6,14 @@ TEST_DIR = ../test
 exe: obj
 	gcc -o $(BUILD_DIR)/main $(BUILD_DIR)/crossroads.o main.c
 
-obj:
+obj-dir:
 	mkdir -p $(BUILD_DIR)
+
+obj: obj-dir
 	gcc -c -o $(BUILD_DIR)/crossroads.o crossroads.c
+
+obj-debug: obj-dir
+	gcc -c -Og -g -o $(BUILD_DIR)/crossroads.o crossroads.c
 
 clean:
 	rm -fr $(BUILD_DIR)/*

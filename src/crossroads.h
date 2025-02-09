@@ -1,6 +1,15 @@
 #include <stdbool.h>
-#define ROAD_LENGTH 1024
-#define LEFT_TURN   -1
+
+#ifndef ROAD_LENGTH
+#define ROAD_LENGTH 4096
+#endif
+
+#define MOVE_COMMAND 1
+#define LEFT_TURN    -1
+#define NORTH        0
+#define EAST         1
+#define SOUTH        2
+#define WEST         3
 
 typedef struct {
   int id, destination;
@@ -13,5 +22,9 @@ typedef struct {
 } Road;
 
 void add(Road *road, bool left, Car car);
+
+Car del(Road *road, bool left);
+
+int cars_amount(Road *road, bool left);
 
 void simulate();
