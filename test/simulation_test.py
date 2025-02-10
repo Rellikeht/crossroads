@@ -23,7 +23,7 @@ def simulation_test(amount=1000):
             continue
         commands.append(f"1 {id} {randint(0, 3)} {randint(0, 3)}")
         id += 1
-        last_car_step = step + 1
+        last_car_step = step
 
     # simple heuristic to make sure all cars have enouth time to drive through
     ADDITIONAL = 2 * id + 1
@@ -52,6 +52,7 @@ def simulation_test(amount=1000):
         f"Last car drove in at {last_car_step} step, "
         + f"last car left at {steps_to_go} step"
     )
+    assert last_car_step <= steps_to_go
 
     # all cars must drive through
     car_output = list(
@@ -63,6 +64,7 @@ def simulation_test(amount=1000):
     cars_left = sorted(reduce(list.__add__, car_output))
     print(f"Cars left: {len(cars_left)} of total {id}")
     assert cars_left == list(range(id))
+    return (last_car_step, steps_to_go)
 
 
 if __name__ == "__main__":
