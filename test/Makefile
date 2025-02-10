@@ -2,7 +2,7 @@ BUILD_DIR = build
 SRC = ../src
 CFLAGS = -Wall -Wextra -pedantic
 
-.PHONY: obj clean tests run road_test run_road_test simulation_test run_simulation_test
+.PHONY: obj clean tests run road_test run_road_test simulation_test run_simulation_test test_simulations
 
 tests: road_test simulation_test
 
@@ -21,6 +21,9 @@ simulation_test:
 
 run_simulation_test: simulation_test
 	@./simulation_test.py
+
+test_simulations: simulation_test
+	@./test_simulations.py
 
 obj:
 	@mkdir -p $(BUILD_DIR)
