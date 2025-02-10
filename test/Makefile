@@ -31,4 +31,4 @@ obj:
 	@cp $(SRC)/build/crossroads.o $(BUILD_DIR)
 
 clean:
-	@rm -fr $(BUILD_DIR)/*
+	rm -fr $(BUILD_DIR)/*

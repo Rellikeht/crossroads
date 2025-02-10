@@ -16,7 +16,7 @@
 #define SOUTH        2
 #define WEST         3
 
-#define MIN_PASS_TIME 1
+#define MIN_PASS_TIME 2
 
 /*
  * Just a car with given destination
@@ -54,12 +54,12 @@ int_t cars_amount(Road *road, bool left);
 /*
  * Move cars on appropriate lanes
  */
-void move_cars(Road roads[4], bool north_south, bool left_turn);
+int move_cars(Road roads[4], bool north_south, bool left_turn);
 
 /*
  * Index of maximum value in array
  */
-int max_val_ind(int_t *nums, size_t size);
+size_t max_val_ind(int_t *nums, size_t size);
 
 /* Run simulation */
 void simulate();
