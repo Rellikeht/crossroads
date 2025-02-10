@@ -15,9 +15,11 @@ road_test:
 run_road_test: road_test
 	$(BUILD_DIR)/road_test
 
-run_simulation_test:
+simulation_test:
 	@make -C $(SRC) exe
 	@cp $(SRC)/build/main $(BUILD_DIR)/simulation
+
+run_simulation_test: simulation_test
 	@./simulation_test.py
 
 obj:

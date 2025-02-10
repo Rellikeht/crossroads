@@ -8,7 +8,7 @@ from functools import reduce
 
 SCRIPT_PATH = path.dirname(path.realpath(__file__))
 
-COMMANDS_AMOUNT = int(argv[0]) if len(argv) > 1 else 1000
+COMMANDS_AMOUNT = int(argv[1]) if len(argv) > 1 else 1000
 
 
 commands = []
@@ -60,5 +60,5 @@ car_output = list(
     )
 )
 cars_left = sorted(reduce(list.__add__, car_output))
-print(cars_left)
+# print(cars_left)
 assert cars_left == list(range(id))

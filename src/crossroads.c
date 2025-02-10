@@ -97,32 +97,25 @@ bool change_lights(
     }
   }
 
-  // if no car is currently waiting on current lane switch the
-  // lights to allow lane with most cars waiting to move
-  if (cur_lane == 0) {
-    int_t nums[4] = {ns_main, ns_left, ew_main, ew_left};
-    switch (max_val_ind(nums, 4)) {
-    case 0:
-      *north_south = true;
-      *left_turn = false;
-      break;
-    case 1:
-      *north_south = true;
-      *left_turn = true;
-      break;
-    case 2:
-      *north_south = false;
-      *left_turn = false;
-      break;
-    case 3:
-      *north_south = false;
-      *left_turn = true;
-      break;
-    }
-    return true;
+  switch (2 * (*north_south) + *left_turn) {
+  case 0:
+    *north_south = false;
+    *left_turn = true;
+    break;
+  case 1:
+    *north_south = true;
+    *left_turn = false;
+    break;
+  case 2:
+    *north_south = true;
+    *left_turn = true;
+    break;
+  case 3:
+    *north_south = false;
+    *left_turn = false;
+    break;
   }
-
-  return false;
+  return true;
 }
 
 void move_cars(Road roads[4], bool north_south, bool left_turn) {
