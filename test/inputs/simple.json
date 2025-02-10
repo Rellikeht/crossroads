@@ -35,6 +35,9 @@
     },
     {
       "type": "step"
+    },
+    {
+      "type": "step"
     }
   ]
 }

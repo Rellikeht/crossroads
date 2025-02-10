@@ -105,14 +105,13 @@ bool change_lights(
   int max_ind = max_val_ind(cars, 4);
 
   // heuristic to determine if it is worth to switch the lights now
-  bool cond = cars[max_ind] * wait_time > cars_moved;
+  bool cond = cars[max_ind] * wait_time >
+              (cars_moved - wait_time + MIN_PASS_TIME);
 
   // if no car is currently waiting on current lane or
   // score condition above is true
   // switch the lights to allow lane with most cars waiting to move
-  /* if (cur_group == 0) { */
   if (cur_group == 0 || cond) {
-
     switch (max_ind) {
     case 0:
       *north_south = true;
